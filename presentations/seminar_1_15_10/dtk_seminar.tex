@@ -56,9 +56,9 @@
 \begin{frame}{Outline}
 
   \begin{itemize}
-  \item Development Hisotry
+  \item Overview
     \medskip
-  \item Domain Model and Geometric Rendezvous
+  \item Concepts and Geometric Rendezvous
     \medskip
   \item DTK Algorithms
     \medskip
@@ -424,7 +424,7 @@
         \item Permutation list specifies the variation in ordering for
           a specified topology
           \medskip
-        \item Support for other mesh topologies currently not offered
+        \item Other mesh topologies currently not supported
       \end{itemize}
     \end{column}
 
@@ -733,7 +733,8 @@
     \medskip
   \item Using DTK in the context of Picard iteration
     \medskip
-  \item Start with existing codes, \item Expose data to DTK
+  \item Start with existing codes, expose data to DTK
+  \item Use mesh-to-mesh mapping in 1D
   \end{itemize}
 
   \begin{figure}
@@ -744,7 +745,7 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}[fragile]{Super Simple Example: Wave Code}
+\begin{frame}[fragile]{Super Simple Example: Wave}
 
   \begin{itemize}
   \item 1D code
@@ -775,7 +776,7 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}[fragile]{Super Simple Example: Damper Code}
+\begin{frame}[fragile]{Super Simple Example: Damper}
 
   \begin{itemize}
   \item 1D code
@@ -799,6 +800,241 @@
       void solve()
       { /* Apply damping to the local data. */ }
     };
+  \end{lstlisting}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Exposing Wave Data}
+
+  \begin{itemize}
+  \item Functions added to the Wave class
+  \end{itemize}
+
+  \begin{lstlisting}
+    // Get the communicator.
+    Teuchos::RCP<const Teuchos::Comm<int> > get_comm() const
+    { return comm; }
+
+    // Get a const reference to the local grid.
+    const Teuchos::RCP<std::vector<double> >& get_grid() const
+    { return grid; }
+
+    // Get a reference to the local data.
+    const Teuchos::RCP<std::vector<double> >& get_data() const
+    { return data; }
+
+    // Get a reference to the local data space storing 
+    // the damping coefficients.
+    Teuchos::RCP<std::vector<double> >& get_damping()
+    { return damping; }
+  \end{lstlisting}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Exposing Damper Data}
+
+  \begin{itemize}
+  \item Functions added to the Damper class
+  \end{itemize}
+
+  \begin{lstlisting}
+    // Get the communicator.
+    Teuchos::RCP<const Teuchos::Comm<int> > get_comm() const
+    { return comm; }
+
+    // Get a reference to the local damping data.
+    Teuchos::RCP<std::vector<double> > get_damping() const
+    { return damping; }
+
+    // Get a reference to the local grid.
+    Teuchos::RCP<std::vector<double> > get_grid() const
+    { return grid; }
+
+    // Get a reference to the memory space for external data 
+    // to be applied to.
+    Teuchos::RCP<std::vector<double> > get_external_data()
+    { return data; }
+  \end{lstlisting}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Wave Function Evaluations}
+
+  \begin{itemize}
+  \item Inherit from DataTransferKit::FieldEvaluator
+  \item Implement the Evaluate() function
+  \end{itemize}
+ 
+  \begin{lstlisting}
+  class WaveEvaluator : 
+  public DataTransferKit::FieldEvaluator<ordinal_type,field_type>
+  {
+    public:
+    WaveEvaluator( const RCP_Wave& wave );
+
+    field_type evaluate( const Teuchos::ArrayRCP<int>& elements,
+    const Teuchos::ArrayRCP<double>& coords )
+    {
+      // Setup an output field.
+      // Get the Wave grid.
+      // Get the Wave data.
+
+      // Interpolate the Wave data onto the given 
+      // coordinates using a linear basis. The 
+      // coordinates will be valid for the given elements.
+    }
+  };
+  \end{lstlisting}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Damper Function Evaluations}
+
+  \begin{itemize}
+  \item Inherit from DataTransferKit::FieldEvaluator
+  \item Implement the Evaluate() function
+  \end{itemize}
+ 
+  \begin{lstlisting}
+  class DamperEvaluator : 
+  public DataTransferKit::FieldEvaluator<ordinal_type,field_type>
+  {
+    public:
+    DamperEvaluator( const RCP_Damper& damper );
+
+    field_type evaluate( const Teuchos::ArrayRCP<int>& elements,
+    const Teuchos::ArrayRCP<double>& coords )
+    {
+      // Setup an output field.
+      // Get the Damper grid.
+      // Get the Damper data.
+
+      // Interpolate the Damper data onto the given 
+      // coordinates using a linear basis. The 
+      // coordinates will be valid for the given elements.
+    }
+  };
+  \end{lstlisting}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Wave Data Adapter}
+
+  \begin{itemize}
+  \item Provide DTK mesh and field data
+  \end{itemize}
+  
+  \begin{lstlisting}
+    class WaveAdapter
+    {
+      // Get the wave mesh.
+      static RCP<DataTransferKit::MeshManager<MeshType> >
+      getMesh( const RCP_Wave& wave );
+
+      // Get the wave field evaluator.
+      static RCP_Evaluator 
+      getFieldEvaluator( const RCP_Wave& wave );
+
+      // Get the wave target coordinates from the mesh.
+      static RCP<DataTransferKit::FieldManager<MeshType> >
+      getTargetCoords( const RCP_Wave& wave );
+
+      // Get the wave target space.
+      static RCP<DataTransferKit::FieldManager<FieldType> >
+      getTargetSpace( const RCP_Wave& wave );
+    };
+  \end{lstlisting}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Damper Data Adapter}
+
+  \begin{itemize}
+  \item Provide DTK mesh and field data
+  \end{itemize}
+  
+  \begin{lstlisting}
+    class DamperAdapter
+    {
+      // Get the damper mesh.
+      static RCP<DataTransferKit::MeshManager<MeshType> >
+      getMesh( const RCP_Damper& damper );
+
+      // Get the damper field evaluator.
+      static RCP_Evaluator 
+      getFieldEvaluator( const RCP_Damper& damper );
+
+      // Get the damper target coordinates from the mesh.
+      static RCP<DataTransferKit::FieldManager<MeshType> >
+      getTargetCoords( const RCP_Damper& damper );
+
+      // Get the damper target space.
+      static RCP<DataTransferKit::FieldManager<FieldType> >
+      getTargetSpace( const RCP_Damper& damper );
+    };
+  \end{lstlisting}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Driver Setup}
+
+  \begin{lstlisting}
+    int main(int argc, char* argv[])
+    {
+      // Parallel setup.
+      Teuchos::RCP<const Teuchos::Comm<int> > comm_union;
+      DataTransferKit::CommTools::unite( 
+                          wave_comm, damper_comm, comm_union );
+      // Wave setup.
+      // Damper setup.
+      // Mapping.
+      DataTransferKit::SharedDomainMap<WaveAdapter::MeshType,
+                                       DamperAdapter::MeshType>
+          wave_to_damper_map( comm_union, 1 );
+      wave_to_damper_map.setup(wave_mesh, damper_target_coords);
+
+      DataTransferKit::SharedDomainMap<DamperAdapter::MeshType,
+                                       WaveAdapter::MeshType>
+          damper_to_wave_map( comm_union, 1 );
+      damper_to_wave_map.setup(damper_mesh, wave_target_coords);
+
+      // Solve. (next slide)
+    }
+  \end{lstlisting}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Driver Solve}
+
+  \begin{itemize}
+  \item Picard iterations to convergence
+  \end{itemize}
+
+  \begin{lstlisting}
+    while( norm > tolerance && num_iter < max_iter )
+    {
+      wave_to_damper_map.apply( wave_evaluator, 
+                                damper_target_space );
+
+      damper->solve();
+
+      damper_to_wave_map.apply( damper_evaluator, 
+                                wave_target_space );
+
+      wave->solve();
+      
+      // Compute Wave data norm.
+      // Update the iteration count.
+      // Barrier before proceeding to the next iteration.
+    }
   \end{lstlisting}
 
 \end{frame}
