@@ -738,7 +738,7 @@
 
   \begin{figure}
     \centering
-    \includegraphics[width=2in]{wavedamperexample.png}
+    \includegraphics[width=4.5in]{wavedamperexample.png}
   \end{figure}
 
 \end{frame}
@@ -746,50 +746,60 @@
 %%---------------------------------------------------------------------------%%
 \begin{frame}[fragile]{Super Simple Example: Wave Code}
 
-\begin{lstlisting}
-class Wave {
-  private:
-    Teuchos::RCP<const Teuchos::Comm<int> > comm;
-    Teuchos::RCP<std::vector<double> > grid;
-    Teuchos::RCP<std::vector<double> > data;
-    Teuchos::RCP<std::vector<double> > damping;
+  \begin{itemize}
+  \item 1D code
+  \item Initial conditions: $\ve{F}(x) = \cos(x)$
+  \end{itemize}
 
-  public:
-    Wave( Teuchos::RCP<const Teuchos::Comm<int> > _comm,
-	  double x_min, double x_max, int num_x)
-    {
-      // Create the grid.
-      // Set initial conditions.
-    }
+  \begin{lstlisting}
+    class Wave {
+      private:
+      Teuchos::RCP<const Teuchos::Comm<int> > comm;
+      Teuchos::RCP<std::vector<double> > grid;
+      Teuchos::RCP<std::vector<double> > data;
+      Teuchos::RCP<std::vector<double> > damping;
 
-    void solve()
-    { /* Apply the damping to the local data */ }
-};
-\end{lstlisting}
+      public:
+      Wave( Teuchos::RCP<const Teuchos::Comm<int> > _comm,
+      double x_min, double x_max, int num_x)
+      {
+        // Create the grid.
+        // Set initial conditions.
+      }
+
+      void solve()
+      { /* Apply the damping to the local data */ }
+    };
+  \end{lstlisting}
 
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}[fragile]{Super Simple Example: Damper Code}
 
-\begin{lstlisting}
-class Damper
-{
-  private:
-    Teuchos::RCP<const Teuchos::Comm<int> > comm;
-    Teuchos::RCP<std::vector<double> > data;
-    Teuchos::RCP<std::vector<double> > damping;
-    Teuchos::RCP<std::vector<double> > grid;
+  \begin{itemize}
+  \item 1D code
+  \item Initial conditions: none
+  \end{itemize}
 
-  public:
-    Damper( Teuchos::RCP<const Teuchos::Comm<int> > _comm,
-	    double x_min, double x_max, int num_x)
-    { /* Create the grid. */ }
+  \begin{lstlisting}
+    class Damper
+    {
+      private:
+      Teuchos::RCP<const Teuchos::Comm<int> > comm;
+      Teuchos::RCP<std::vector<double> > data;
+      Teuchos::RCP<std::vector<double> > damping;
+      Teuchos::RCP<std::vector<double> > grid;
 
-    void solve()
-    { /* Apply damping to the local data. */ }
-};
-\end{lstlisting}
+      public:
+      Damper( Teuchos::RCP<const Teuchos::Comm<int> > _comm,
+      double x_min, double x_max, int num_x)
+      { /* Create the grid. */ }
+
+      void solve()
+      { /* Apply damping to the local data. */ }
+    };
+  \end{lstlisting}
 
 \end{frame}
 
