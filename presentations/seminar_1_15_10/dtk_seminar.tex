@@ -597,18 +597,21 @@
     \item What user code should provide:
       \medskip
       \begin{itemize}
-      \item Allocated memory list of the resulting function integrations for each
-        global element ID provided ($f_{\omega}$)
+      \item Allocated memory block large enough to hold the resulting
+        function evaluations or integrations for the specified local
+        target objects
       \end{itemize}
     \item What user code should expect:
       \medskip
       \begin{itemize}
-      \item A list of global element IDs that are on-process ($\omega$)
+      \item No allocation of memory
+      \item A result of 0 if no evaluation or integration occurred for
+        that object
       \end{itemize}
       \medskip
     \item All data provided to user code will be local with respect to
       input data
-    \item C++ inheritance (mix-in interface)
+    \item Implemented as array views (pointer and size)
   \end{itemize}
 
 \end{frame}
@@ -638,7 +641,7 @@
       \item Used to move $\ve{F}(\hat{r})$ between meshes of arbitrary
         distribution
         \medskip
-      \item Requires user code for evaluations
+      \item Requires user code for evaluations in mesh elements
       \end{itemize}
 
       \begin{figure}
@@ -665,7 +668,7 @@
         \medskip
       \item The mesh is assumed conformal
         \medskip
-      \item Requires user code for integrations
+      \item Requires user code for integrations in mesh elements
         \medskip
       \item See example/IntegralAssembly
       \end{itemize}
@@ -695,7 +698,7 @@
     \medskip
   \item Geometries are assumed conformal
     \medskip
-  \item Requires user code for evaluations
+  \item Requires user code for evaluations in geometry
     \medskip
   \item See example/GeometryToGeometry
   \end{itemize}
@@ -715,7 +718,7 @@
     \medskip
   \item Does not require a mesh, conceptual in this case
     \medskip
-  \item Requires user code for evaluations
+  \item Requires user code for evaluations in geometry
     \medskip
   \item See example/GeometryToMesh
   \end{itemize}
@@ -724,6 +727,69 @@
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Super Simple Example}
+
+  \begin{itemize}
+  \item examples/WaveDamper
+    \medskip
+  \item Using DTK in the context of Picard iteration
+    \medskip
+  \item Start with existing codes, \item Expose data to DTK
+  \end{itemize}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=2in]{wavedamperexample.png}
+  \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Wave Code}
+
+\begin{lstlisting}
+class Wave {
+  private:
+    Teuchos::RCP<const Teuchos::Comm<int> > comm;
+    Teuchos::RCP<std::vector<double> > grid;
+    Teuchos::RCP<std::vector<double> > data;
+    Teuchos::RCP<std::vector<double> > damping;
+
+  public:
+    Wave( Teuchos::RCP<const Teuchos::Comm<int> > _comm,
+	  double x_min, double x_max, int num_x)
+    {
+      // Create the grid.
+      // Set initial conditions.
+    }
+
+    void solve()
+    { /* Apply the damping to the local data */ }
+};
+\end{lstlisting}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}[fragile]{Super Simple Example: Damper Code}
+
+\begin{lstlisting}
+class Damper
+{
+  private:
+    Teuchos::RCP<const Teuchos::Comm<int> > comm;
+    Teuchos::RCP<std::vector<double> > data;
+    Teuchos::RCP<std::vector<double> > damping;
+    Teuchos::RCP<std::vector<double> > grid;
+
+  public:
+    Damper( Teuchos::RCP<const Teuchos::Comm<int> > _comm,
+	    double x_min, double x_max, int num_x)
+    { /* Create the grid. */ }
+
+    void solve()
+    { /* Apply damping to the local data. */ }
+};
+\end{lstlisting}
 
 \end{frame}
 
