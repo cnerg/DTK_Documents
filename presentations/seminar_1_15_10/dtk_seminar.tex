@@ -210,6 +210,7 @@
     \medskip
   \item $\ve{M}$ is in general expensive to generate but cheap to
     apply
+    \medskip
   \item For static $\ve{F}(s)$ and $\ve{G}(t)$, building $\ve{M}$ is a
     one-time, upfront cost
   \end{itemize}
@@ -409,7 +410,7 @@
     \begin{column}{0.5\textwidth}
       \begin{figure}[htpb!]
         \centering
-        \includegraphics[width=2.5in]{Linear_Elements.pdf}
+        \includegraphics[width=2.2in]{Linear_Elements.pdf}
         \caption{\bf \sl Canonical vertex connectivity schemes for elements
           in DTK.}
         \label{fig:linear_elements}
@@ -590,24 +591,37 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Other Rendezvous-Based Maps: Integral Assembly}
+\begin{frame}{Standard Mesh-Based Rendezvous Map}
 
   \begin{columns}
     
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-      \item Mesh-to-geometry transfer
-      \item Used to assemble $f_{\Omega}$ with mesh and geometry of
-        arbitrary distribution
-        \medskip
-      \item Requires user code for integrations
-        \medskip
-      \end{itemize}
+    \begin{column}{0.4\textwidth}
+      \begin{figure}
+      \centering
+      \includegraphics[width=0.9in]{neutronics_parallel_decomp.png}
+      \end{figure}
+
+      \begin{figure}
+      \centering
+      \includegraphics[width=0.9in]{cfd_parallel_decomp.png}
+      \end{figure}
+
+      \begin{figure}
+      \centering
+      \includegraphics[width=0.9in]{cfd_transferred_field.png}
+      \end{figure}
     \end{column}
 
-    \begin{column}{0.5\textwidth}
-      \centering
-      \includegraphics[width=2.4in]{integral_assembly.png}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}
+      \item Mesh-to-Mesh transfer \footnote{Example provided by Roger
+        Pawlowski}
+        \medskip
+      \item Used to move $\ve{F}(\hat{r})$ between meshes of arbitrary
+        distribution
+        \medskip
+      \item Requires user code for evaluations
+      \end{itemize}
     \end{column}
 
   \end{columns}
@@ -615,7 +629,73 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Other Rendezvous-Based Maps: Volume Source}
+\begin{frame}{Other Rendezvous-Based Maps: Integral Assembly}
+
+  \begin{columns}
+    
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}
+      \item Mesh-to-geometry transfer
+        \medskip
+      \item Used to assemble $f_{\Omega}$ with mesh and geometry of
+        arbitrary distribution into measure-weighted integral
+        \medskip
+      \item The mesh is assumed conformal
+        \medskip
+      \item Requires user code for integrations
+        \medskip
+      \item See example/IntegralAssembly
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.6\textwidth}
+      \begin{figure}
+      \centering
+      \includegraphics[width=2.5in]{integral_assembly.png}
+      \end{figure}
+    \end{column}
+
+  \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Other Rendezvous-Based Maps: Geometry to Geometry}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=2in]{volumetovolume.png}
+  \end{figure}
+
+  \begin{itemize}
+  \item Simple geometry-to-geometry transfer capability
+    \medskip
+  \item Geometries are assumed conformal
+    \medskip
+  \item Requires user code for evaluations
+    \medskip
+  \item See example/GeometryToGeometry
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Other Rendezvous-Based Maps: Geometry to Mesh}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=2in]{volumetomesh.png}
+  \end{figure}
+
+  \begin{itemize}
+  \item Similar to mesh-based rendezvous
+    \medskip
+  \item Does not require a mesh, conceptual in this case
+    \medskip
+  \item Requires user code for evaluations
+    \medskip
+  \item See example/GeometryToMesh
+  \end{itemize}
 
 \end{frame}
 
