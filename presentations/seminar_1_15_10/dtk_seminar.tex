@@ -1,0 +1,118 @@
+\documentclass{beamer}
+\usetheme[white]{Wisconsin}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{color}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+\usepackage{amsthm} \usepackage{amsmath} \usepackage{tmadd,tmath}
+\usepackage[mathcal]{euscript} \usepackage{color}
+\usepackage{textcomp}
+\usepackage{algorithm,algorithmic}
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\lstset{
+  backgroundcolor=\color{lbcolor},
+  tabsize=4,
+  rulecolor=,
+  language=c++,
+  basicstyle=\scriptsize,
+  upquote=true,
+  aboveskip={1.5\baselineskip},
+  columns=fixed,
+  showstringspaces=false,
+  extendedchars=true,
+  breaklines=true,
+  prebreak =
+  \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+  frame=single,
+  showtabs=false,
+  showspaces=false,
+  showstringspaces=false,
+  identifierstyle=\ttfamily,
+  keywordstyle=\color[rgb]{0,0,1},
+  commentstyle=\color[rgb]{0.133,0.545,0.133},
+  stringstyle=\color[rgb]{0.627,0.126,0.941},
+}
+
+%% colors
+\setbeamercolor{boxheadcolor}{fg=white,bg=UWRed}
+\setbeamercolor{boxbodycolor}{fg=black,bg=white}
+
+
+%%---------------------------------------------------------------------------%%
+\author{Stuart R. Slattery
+  \\ Engineering Physics Department
+  \\ University of Wisconsin - Madison
+}
+
+\date{\today} 
+\title{Data Transfer Kit Summary}
+\begin{document}
+\maketitle
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Outline}
+
+  \begin{itemize}
+  \item Development Hisotry
+    \medskip
+  \item The Rendezous Algorithm
+    \medskip
+  \item Domain Model
+    \medskip
+  \item DTK Algorithms
+    \medskip
+  \item Code Examples
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{What is DTK?}
+
+  \begin{itemize}
+  \item Collection of data mapping algorithms for shared domain probelems
+    \medskip
+  \item Data maps allow for efficient movement of data in parallel
+    (e.g. between meshes of a different parallel decomposition)
+    \medskip
+  \item Ideally maps are generated at a desireable time complexity
+    (logarithmic)
+    \medskip
+  \item Mesh and geometry data drive the map generation
+    \medskip
+  \item Should be viewed as a service providing suite of concrete
+    algorithm implementations
+    \medskip
+  \item Does not provide a general interface for all physics codes to
+    couple to all other physics codes
+    \medskip
+  \end{itemize}
+ 
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Software Overview}
+
+  \begin{itemize}
+  \item Preliminary development of mesh-based capabilities during
+    summer 2012 CASL internship at ORNL
+    \medskip
+  \item Additional development of geometry-based capabilities during
+    fall 2012
+    \medskip
+  \item Implemented in C++
+    \medskip
+  \item Heavy use of the Trilinos scientific computing libraries
+    \medskip
+  \item Continuous and nightly testing as part of the CASL CDash
+    system
+  \end{itemize}
+  
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+
+\end{document}
