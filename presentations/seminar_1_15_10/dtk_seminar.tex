@@ -71,7 +71,8 @@
 \begin{frame}{What is DTK?}
 
   \begin{itemize}
-  \item Collection of data mapping algorithms for shared domain probelems
+  \item Collection of geometry-based data mapping algorithms for
+    shared domain probelems
     \medskip
   \item Data maps allow for efficient movement of data in parallel
     (e.g. between meshes of a different parallel decomposition)
@@ -98,6 +99,8 @@
     \medskip
   \item Does not provide algorithm implementations for interface-based
     data transfer
+    \medskip
+  \item Does not allocate or deallocate memory in user code
   \end{itemize}
 
 \end{frame}
@@ -118,12 +121,16 @@
     \medskip
   \item Continuous and nightly testing as part of the CASL CDash
     system
+    \medskip
+  \item Open-source BSD 3-clause license
+    \medskip
+  \item https://github.com/CNERG/DataTransferKit
   \end{itemize}
   
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Domain Model and Geometric Rendezvous}
+\begin{frame}{Concepts and Geometric Rendezvous}
 
 \end{frame}
 
@@ -193,12 +200,18 @@
 \begin{frame}{Parallel Topology Maps}
 
   \begin{itemize}
-  \item An operator, $M$, that defines the translation of a field,
-    $F(s)$, from a source spatial domain, $\Omega_S$, to a field,
-    $G(t$), in the target spatial domain $\Omega_T$, such that
-    $G(t)\leftarrow M(F(s))$ and $M: \mathbb{R}^D \rightarrow
-    \mathbb{R}^D, \forall r \in \Omega_R$, where $\Omega_R$ is the
-    geometric rendezvous of the source and target.
+  \item An operator, $\ve{M}$, that defines the translation of a
+    field, $\ve{F}(s)$, from a source spatial domain, $\Omega_S$, to a
+    field, $\ve{G}(t$), in the target spatial domain $\Omega_T$, such
+    that $\ve{G}(t)\leftarrow \ve{M}(\ve{F}(s))$ and $\ve{M}:
+    \mathbb{R}^D \rightarrow \mathbb{R}^D, \forall r \in \Omega_R$,
+    where $\Omega_R$ is the geometric rendezvous of the source and
+    target.
+    \medskip
+  \item $\ve{M}$ is in general expensive to generate but cheap to
+    apply
+  \item For static $\ve{F}(s)$ and $\ve{G}(t)$, building $\ve{M}$ is a
+    one-time, upfront cost
   \end{itemize}
 
 \end{frame}
@@ -222,7 +235,7 @@
       map generation
       \medskip
     \item Relies on the generation of a secondary decomposition of the
-      source and target meshes with a geometric based paritioning
+      source and target meshes with a geometric-based paritioning
       (RCB)
   \end{itemize}
 
@@ -289,11 +302,12 @@
     \begin{column}{0.5\textwidth}
       \begin{itemize}
       \item Mesh-to-mesh transfer
-      \item Worst case scenario study (all-to-all)
+      \item Worst case scenario study (all-to-all) with random points
         \medskip
       \item Qualitatively similar to the SIERRA results
         \medskip
-      \item Largest problems so for over 1.0E9 elements and 1.0E5 cores
+      \item Largest test problems so far over 1.0E9 elements and 1.0E5
+        cores
       \end{itemize}
     \end{column}
 
@@ -341,7 +355,7 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Getting Data into DTK: The Mesh}
+\begin{frame}{Getting Data into DTK: Mesh}
   
   \begin{itemize}
     \item Meshes are viewed as geometric structures
@@ -436,6 +450,157 @@
       construct their elements.}
     \label{fig:hybrid_mesh}
   \end{figure}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Getting Data into DTK: Geometry}
+  
+  \begin{itemize}
+  \item DTK's perception of general geometric structures is primitive
+    \medskip
+  \item A more capable geometry engine required for advanced
+    algorithms
+    \medskip
+  \item A subset of total geometry information is needed:
+    \medskip
+    \begin{itemize}
+    \item Centroid
+    \item Bounding box
+    \item Measure
+    \item Point inclusion
+    \end{itemize}
+    \medskip
+  \item Parallel information is not required
+    \medskip
+  \item A communicator and global IDs are required
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Getting Data into DTK: Field Evaluations}
+
+  \begin{itemize}
+  \item Actual discretization of the field is not explicitly
+    formulated
+    \medskip
+  \item Access to discretization of fields is generated through user
+    code function evaluations at points in physical space:
+    \medskip
+  \end{itemize}
+
+  \[
+  \hat{f} \leftarrow \ve{F}(\hat{r}), \forall \hat{r} \in \Omega
+  \]
+
+  \begin{itemize}
+  \item In the context of $\Omega$ discretized by a mesh, these
+    evaluations can instead be written in terms of a single mesh
+    element, $\omega \in \Omega$:
+  \end{itemize}
+
+  \[
+  \hat{f} \leftarrow \ve{F}(\hat{r}), \forall \hat{r} \in \omega
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Getting Data into DTK: Field Evaluations}
+
+  \begin{itemize}
+    \item What user code should expect:
+      \medskip
+      \begin{itemize}
+      \item A list of global element IDs that are on-process ($\omega$)
+      \item A corresponding list of point coordinates ($\hat{r}$)
+      \end{itemize}
+      \medskip
+    \item What user code should provide:
+      \medskip
+      \begin{itemize}
+      \item A list of the resulting function evaluations for each
+        global element ID/point coordinate pair provided ($\hat{f}$)
+      \end{itemize}
+    \item All data provided to user code will be local with respect to
+      input data
+    \item C++ inheritance (mix-in interface)
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Getting Data into DTK: Field Integrations}
+
+  \begin{itemize}
+  \item Consider a measure-weighted integral:
+  \end{itemize}
+
+  \[
+  f_{\Omega} = \frac{\int_{\Omega} \ve{F}(r) dr}{\int_{\Omega} dr}
+  \]
+
+  \begin{itemize}
+  \item In the context of $\Omega$ discretized by a mesh, these
+    evaluations can instead be written in terms of a single mesh
+    element, $\omega \in \Omega$:
+  \end{itemize}
+
+  \[
+  f_{\omega} = \int_{\omega} \ve{F}(r) dr
+  \]
+
+  \begin{itemize}
+  \item The integral over $\Omega$ will be the measure-weighted
+    summation of all element integrals:
+  \end{itemize}
+
+  \[
+    f_{\Omega} = \frac{1}{m_{\Omega}} \sum_i f_{{\omega}_i},\ \forall
+    \omega_i \in \Omega
+  \]
+
+  \begin{itemize}
+  \item Element-wise spatial integrals generated through user code
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Getting Data into DTK: Field Integrations}
+
+  \begin{itemize}
+    \item What user code should expect:
+      \medskip
+      \begin{itemize}
+      \item A list of global element IDs that are on-process ($\omega$)
+      \end{itemize}
+      \medskip
+    \item What user code should provide:
+      \medskip
+      \begin{itemize}
+      \item A list of the resulting function integrations for each
+        global element ID provided ($f_{\omega}$)
+      \end{itemize}
+    \item All data provided to user code will be local with respect to
+      input data
+    \item C++ inheritance (mix-in interface)
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Other Rendezvous-Based Maps: Integral Assembly}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Other Rendezvous-Based Maps: Volume Source}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Super Simple Example}
 
 \end{frame}
 
