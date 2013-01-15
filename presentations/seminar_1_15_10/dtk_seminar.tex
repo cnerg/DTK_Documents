@@ -211,7 +211,7 @@
   \item $\ve{M}$ is in general expensive to generate but cheap to
     apply
     \medskip
-  \item For static $\ve{F}(s)$ and $\ve{G}(t)$, building $\ve{M}$ is a
+  \item For static $\Omega_S$ and $\Omega_T$, building $\ve{M}$ is a
     one-time, upfront cost
   \end{itemize}
 
@@ -313,8 +313,12 @@
     \end{column}
 
     \begin{column}{0.5\textwidth}
+      \begin{figure}
       \centering
       \includegraphics[width=2.4in]{mesh.png}
+      \caption{\sl Local mesh partition for scaling studies. This
+        particular mesh partition has 1.0E4 tri-linear hexahedrons.}
+      \end{figure}
     \end{column}
 
   \end{columns}
@@ -817,16 +821,16 @@
     { return comm; }
 
     // Get a const reference to the local grid.
-    const Teuchos::RCP<std::vector<double> >& get_grid() const
+    const Teuchos::RCP<std::vector<double> > get_grid() const
     { return grid; }
 
     // Get a reference to the local data.
-    const Teuchos::RCP<std::vector<double> >& get_data() const
+    const Teuchos::RCP<std::vector<double> > get_data() const
     { return data; }
 
     // Get a reference to the local data space storing 
     // the damping coefficients.
-    Teuchos::RCP<std::vector<double> >& get_damping()
+    Teuchos::RCP<std::vector<double> > get_damping()
     { return damping; }
   \end{lstlisting}
 
@@ -875,8 +879,8 @@
     public:
     WaveEvaluator( const RCP_Wave& wave );
 
-    field_type evaluate( const Teuchos::ArrayRCP<int>& elements,
-    const Teuchos::ArrayRCP<double>& coords )
+    field_type evaluate(const Teuchos::ArrayRCP<int>& elements,
+                        const Teuchos::ArrayRCP<double>& coords)
     {
       // Setup an output field.
       // Get the Wave grid.
@@ -906,8 +910,8 @@
     public:
     DamperEvaluator( const RCP_Damper& damper );
 
-    field_type evaluate( const Teuchos::ArrayRCP<int>& elements,
-    const Teuchos::ArrayRCP<double>& coords )
+    field_type evaluate(const Teuchos::ArrayRCP<int>& elements,
+                        const Teuchos::ArrayRCP<double>& coords)
     {
       // Setup an output field.
       // Get the Damper grid.
