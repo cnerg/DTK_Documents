@@ -180,11 +180,26 @@
         \medskip
       \item Source and target must be of same geometric dimension
         \medskip
-      \item The rendezvous algorithm leveraged to map shared domains
+      \item The rendezvous algorithm leveraged to provide parallel
+        topology maps for shared domains
       \end{itemize}
     \end{column}
 
   \end{columns}
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Parallel Topology Maps}
+
+  \begin{itemize}
+  \item An operator, $M$, that defines the translation of a field,
+    $F(s)$, from a source spatial domain, $\Omega_S$, to a field,
+    $G(t$), in the target spatial domain $\Omega_T$, such that
+    $G(t)\leftarrow M(F(s))$ and $M: \mathbb{R}^D \rightarrow
+    \mathbb{R}^D, \forall r \in \Omega_R$, where $\Omega_R$ is the
+    geometric rendezvous of the source and target.
+  \end{itemize}
 
 \end{frame}
 
