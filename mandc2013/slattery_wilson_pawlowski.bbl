@@ -1,0 +1,58 @@
+\begin{thebibliography}{10}
+
+\bibitem{Tautges_2009_2}
+T.~Tautges and A.~Caceres, ``Scalable parallel solution coupling for
+  multiphysics reactor simulation,'' {\em Journal of Physics: Conference
+  Series}, vol.~180, pp.~1--5, 2009.
+
+\bibitem{Edwards_2006}
+H.~Edwards, ``Managing complexity in massively parallel, adaptive, multiphysics
+  applications,'' {\em Engineering with Computers}, vol.~22, pp.~135--155,
+  2006.
+
+\bibitem{u.s._department_of_energy_casl_2011}
+{{U.S.} Department of Energy}, ``{CASL} - a project summary,''
+  {CASL-U-2011-0025-000}, Consortium for Advanced Simulation of {LWRs}, 2011.
+
+\bibitem{Plimpton_2004}
+S.~Plimpton, B.~Hendrickson, and J.~Stewart, ``A parallel rendezvous algorithm
+  for interpolation between multiple grids,'' {\em Journal of Parallel and
+  Distributed Computing}, vol.~64, pp.~266--276, 2004.
+
+\bibitem{Stewart_2004}
+J.~Stewart and H.~Edwards, ``A framework approach for developing parallel
+  adaptive multiphysics applications,'' {\em Finite Elements in Analysis and
+  Design}, vol.~40, pp.~1599--1617, 2004.
+
+\bibitem{Chand_2008}
+K.~Chand, L.~Diachin, C.~Ollivier-Gooch, E.~Seol, M.~Shephard, T.~Tautges, and
+  H.~Trease, ``Toward interoperable mesh, geometry and field components for pde
+  simulation development,'' {\em Engineering with Computers}, vol.~24,
+  pp.~165--182, 2008.
+
+\bibitem{Berger_1987}
+M.~Berger and S.~Bokhari, ``A partitioning strategy for nonuniform problems on
+  multiprocessors,'' {\em IEEE Transactions on Computing}, pp.~570--580, 1987.
+
+\bibitem{Bentley_1975}
+J.~Bentley, ``Multidimensional binary search trees used for associative
+  searching,'' {\em Communications of the ACM}, vol.~18, pp.~509--517, 1975.
+
+\bibitem{drekar_cfd}
+R.~P. Pawlowski, J.~N. Shadid, T.~M. Smith, E.~C. Cyr, and P.~D. Weber,
+  ``Drekar::{CFD} - a turbulent fluid-flow and conjugate heat transfer code:
+  Theory manual (version 1.0),'' Sandia Technical Report SAND2012-2697, Sandia
+  National Laboratories, P.O. Box 5800, Albuquerque, NM 87185, March 2012.
+
+\bibitem{denovo_2010}
+T.~M. Evans, A.~S. Stafford, R.~N. Slaybaugh, and K.~T. Clarno, ``Denovo: a new
+  three-dimensional parallel discrete ordinates code in {SCALE},'' {\em Nuclear
+  Technology}, vol.~171, p.~171200, 2010.
+
+\bibitem{shadid_2006}
+J.~Shadid, A.~Salinger, R.~Pawlowski, P.~Lin, G.~Hennigan, R.~Tuminaro, and
+  R.~Lehoucq, ``Large-scale stabilized {FE} computational analysis of nonlinear
+  steady-state transport/reaction systems,'' {\em Computer Methods in Applied
+  Mechanics and Engineering}, vol.~195, pp.~1846--1871, 2006.
+
+\end{thebibliography}
