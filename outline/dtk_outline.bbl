@@ -1,0 +1,32 @@
+\begin{thebibliography}{1}
+
+\bibitem{Bartlett_2010}
+R.~Bartlett, ``Teuchos c++ memory management classes, idioms, and related
+  topics: The complete reference (a comprehensive strategy for safe and
+  efficient memory management in c++ for high performance computing),''
+  no.~SAND2010-2234, 2010.
+
+\bibitem{Farhat_1998}
+C.~Farhat, M.~Lesoinne, and P.~LeTallec, ``Load and motion transfer algoritms
+  for fluid/structure interaction problems with non-matching descrete
+  interfaces: Momentum and energy conservation, optimal discretization and
+  application to aeroelasticity,'' {\em Computational methods in applied
+  mechanics and engineering}, vol.~157, pp.~95--114, 1998.
+
+\bibitem{Jiao_2004}
+X.~Jiao and M.~Heath, ``Common-refinement-based data transfer between
+  non-matching meshes in multiphysics simulations,'' {\em International Journal
+  for Numerical Methods in Engineering}, vol.~61, pp.~2402--2427, 2004.
+
+\bibitem{Sutter_2004}
+H.~Sutter and A.~Alexandrescu, {\em C++ Coding Standards: 101 Rules,
+  Guidelines, and Best Practices}.
+\newblock Addison Wesleyn, 2004.
+
+\bibitem{Bartlett_2012}
+R.~Bartlett, M.~Heroux, and J.~Willenbring, ``Tribits lifecycle model version
+  1.0: A lean/agile software lifecycle model for research-based computational
+  science and engineering and applied mathematical software,''
+  no.~SAND2012-0561, 2012.
+
+\end{thebibliography}

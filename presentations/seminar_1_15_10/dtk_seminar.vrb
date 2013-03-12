@@ -1,0 +1,23 @@
+\frametitle {Super Simple Example: Driver Solve}\par   \begin{itemize}
+  \item Picard iterations to convergence
+  \end{itemize}
+
+  \begin{lstlisting}
+    while( norm > tolerance && num_iter < max_iter )
+    {
+      wave_to_damper_map.apply( wave_evaluator,
+                                damper_target_space );
+
+      damper->solve();
+
+      damper_to_wave_map.apply( damper_evaluator,
+                                wave_target_space );
+
+      wave->solve();
+
+      // Compute Wave data norm.
+      // Update the iteration count.
+      // Barrier before proceeding to the next iteration.
+    }
+  \end{lstlisting}
+

@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: dtk_outline.aux
+The style file: ieeetr.bst
+Database file #1: references.bib
+Warning--empty journal in Bartlett_2010
+Warning--empty journal in Bartlett_2012
+You've used 5 entries,
+            1876 wiz_defined-function locations,
+            511 strings with 4708 characters,
+and the built_in function-call counts, 1143 in all, are:
+= -- 107
+> -- 42
+< -- 0
++ -- 16
+- -- 11
+* -- 76
+:= -- 171
+add.period$ -- 6
+call.type$ -- 5
+change.case$ -- 4
+chr.to.int$ -- 0
+cite$ -- 7
+duplicate$ -- 61
+empty$ -- 116
+format.name$ -- 11
+if$ -- 279
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 6
+newline$ -- 19
+num.names$ -- 5
+pop$ -- 20
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 33
+stack$ -- 0
+substring$ -- 59
+swap$ -- 19
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 2
+while$ -- 9
+width$ -- 6
+write$ -- 47
+(There were 2 warnings)
