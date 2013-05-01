@@ -47,24 +47,29 @@
   Laboratories }
 
 \date{\today} 
-\title{The Data Transfer Kit: A Geometry Rendezvous-Based Tool for
+\title{The Data Transfer Kit: A Geometric Rendezvous-Based Tool for
   Multiphysics Data Transfer}
 \begin{document}
 \maketitle
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Outline}
+\begin{frame}{Motivation}
 
   \begin{itemize}
-  \item Overview
+  \item Desire tools to facilitate massively parallel multiphysics
+    simulation within the Consortium for Advanced Simulation of LWRs
+    (CASL)
     \bigskip
-  \item Concepts and Geometric Rendezvous
+  \item Potentially complex data transfer required between
+    non-matching grids in geometric and parallel space
     \bigskip
-  \item DTK Algorithms
+  \item No common framework (both software and mathematical) is
+    leveraged by all codes
     \bigskip
-  \item Data Transfer Example
+  \item Algorithm-driven library needed
     \bigskip
-  \item Scaling Studies
+  \item Decouple discretization and DOFs from the data transfer
+    algorithms
   \end{itemize}
 
 \end{frame}
@@ -75,17 +80,18 @@
   \begin{itemize}
   \item Collection of geometry-based data mapping algorithms for
     shared domain problems
-    \medskip
-  \item Data maps allow for efficient movement of data in parallel
-    (e.g. between meshes of a different parallel decomposition)
-    \medskip
+    \bigskip
+  \item Parallel topology maps allow for efficient movement of data in
+    parallel (e.g. between meshes of a different parallel
+    decomposition)
+    \bigskip
   \item Ideally maps are generated at a desirable time complexity
     (logarithmic)
-    \medskip
+    \bigskip
   \item Input mesh and geometry data drive the map generation
-    \medskip
+    \bigskip
   \item Should be viewed as a service providing suite of concrete
-    algorithm implementations
+    algorithm implementations for topology map generation
   \end{itemize}
  
 \end{frame}
@@ -96,16 +102,16 @@
   \begin{itemize}
   \item Preliminary development of mesh-based capabilities during
     summer 2012 CASL internship at ORNL
-    \medskip
+    \bigskip
   \item Additional development of geometry-based capabilities during
     fall 2012
-    \medskip
+    \bigskip
   \item Implemented in C++
-    \medskip
+    \bigskip
   \item Heavy use of the Trilinos scientific computing libraries
-    \medskip
+    \bigskip
   \item Open-source BSD 3-clause license
-    \medskip
+    \bigskip
   \item https://github.com/CNERG/DataTransferKit
   \end{itemize}
   
@@ -190,22 +196,32 @@
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Parallel Topology Maps}
+  
+  An operator, $\ve{M}$, that defines the translation of a field,
+  $\ve{F}(s)$, from a source spatial domain, $\Omega_S$, to a field,
+  $\ve{G}(t$), in the target spatial domain $\Omega_T$, such that
+  \[
+  \ve{G}(t)\leftarrow \ve{M}(\ve{F}(s))
+  \] 
+  and 
+  \[
+  \ve{M}: \mathbb{R}^D \rightarrow \mathbb{R}^D, \forall r \in
+  \Omega_R
+  \]
+  where $\Omega_R$ is the geometric rendezvous of the source and
+  target
+  \bigskip
 
-  \begin{itemize}
-  \item An operator, $\ve{M}$, that defines the translation of a
-    field, $\ve{F}(s)$, from a source spatial domain, $\Omega_S$, to a
-    field, $\ve{G}(t$), in the target spatial domain $\Omega_T$, such
-    that $\ve{G}(t)\leftarrow \ve{M}(\ve{F}(s))$ and $\ve{M}:
-    \mathbb{R}^D \rightarrow \mathbb{R}^D, \forall r \in \Omega_R$,
-    where $\Omega_R$ is the geometric rendezvous of the source and
-    target.
-    \bigskip
-  \item $\ve{M}$ is in general expensive to generate but cheap to
-    apply
-    \bigskip
-  \item For static $\Omega_S$ and $\Omega_T$, building $\ve{M}$ is a
-    one-time, upfront cost
-  \end{itemize}
+  \begin{beamerboxesrounded}[upper=boxheadcolor,lower=boxbodycolor,shadow=true]
+    {Notes}
+    \begin{itemize}
+    \item $\ve{M}$ is in general expensive to generate but cheap to
+      apply
+      \bigskip
+    \item For static $\Omega_S$ and $\Omega_T$, building $\ve{M}$ is a
+      one-time, upfront cost
+    \end{itemize}
+  \end{beamerboxesrounded}
 
 \end{frame}
 
@@ -222,8 +238,8 @@
       \medskip
     \item Creates a parallel topology map that can be used repeatedly
       for data transfer
-    \item Map execution uses asynchronous strategy (posts and waits)
-      with minimal messages
+    \item Map application uses asynchronous parallel strategy with
+      minimal messages
     \item Effectively $N*log(N)$ time complexity for parallel topology
       map generation
       \medskip
@@ -288,7 +304,37 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Standard Mesh-Based Rendezvous Map}
+\begin{frame}{Field Evaluations for Map Application}
+
+  \begin{itemize}
+  \item Need to drive $\ve{G}(t)\leftarrow \ve{M}(\ve{F}(s))$
+    \medskip
+  \item Actual discretization of the field is not explicitly
+    formulated
+    \medskip
+  \item Access to discretization of fields is generated through user
+    code function evaluations at points in physical space:
+    \medskip
+  \end{itemize}
+
+  \[
+  \hat{f} \leftarrow \ve{F}(\hat{r}), \forall \hat{r} \in \Omega
+  \]
+
+  \begin{itemize}
+  \item In the context of $\Omega$ discretized by a mesh, these
+    evaluations can instead be written in terms of a single mesh
+    element, $\omega \in \Omega$:
+  \end{itemize}
+
+  \[
+  \hat{f} \leftarrow \ve{F}(\hat{r}), \forall \hat{r} \in \omega
+  \]
+
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Neutronics/Thermal Hydraulics Verification}
 
   \begin{columns}
     
@@ -312,6 +358,8 @@
         distribution
         \medskip
       \item Requires user code for evaluations in mesh elements
+        \medskip
+      \item 10-core ($2 \times 5$) calculation
       \end{itemize}
 
       \begin{figure}
@@ -322,6 +370,42 @@
 
   \end{columns}
 
+\end{frame}
+
+%%---------------------------------------------------------------------------%%
+\begin{frame}{Field Integrations for Map Application}
+
+  \begin{itemize}
+  \item Consider a measure-weighted integral:
+  \end{itemize}
+
+  \[
+  f_{\Omega} = \frac{\int_{\Omega} \ve{F}(r) dr}{\int_{\Omega} dr}
+  \]
+
+  \begin{itemize}
+  \item In the context of $\Omega$ discretized by a mesh, these
+    evaluations can instead be written in terms of a single mesh
+    element, $\omega \in \Omega$:
+  \end{itemize}
+
+  \[
+  f_{\omega} = \int_{\omega} \ve{F}(r) dr
+  \]
+
+  \begin{itemize}
+  \item The integral over $\Omega$ will be the measure-weighted
+    summation of all element integrals:
+  \end{itemize}
+
+  \[
+    f_{\Omega} = \frac{1}{m_{\Omega}} \sum_i f_{{\omega}_i},\ \forall
+    \omega_i \in \Omega
+  \]
+
+  \begin{itemize}
+  \item Element-wise spatial integrals generated through user code
+  \end{itemize}
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
@@ -339,8 +423,6 @@
       \item The mesh is assumed conformal
         \medskip
       \item Requires user code for integrations in mesh elements
-        \medskip
-      \item See example/IntegralAssembly
       \end{itemize}
     \end{column}
 
@@ -356,46 +438,6 @@
 \end{frame}
 
 %%---------------------------------------------------------------------------%%
-\begin{frame}{Other Rendezvous-Based Maps: Geometry to Geometry}
-
-  \begin{figure}
-    \centering
-    \includegraphics[width=2in]{volumetovolume.png}
-  \end{figure}
-
-  \begin{itemize}
-  \item Simple geometry-to-geometry transfer capability
-    \medskip
-  \item Geometries are assumed conformal
-    \medskip
-  \item Requires user code for evaluations in geometry
-    \medskip
-  \item See example/GeometryToGeometry
-  \end{itemize}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
-\begin{frame}{Other Rendezvous-Based Maps: Geometry to Mesh}
-
-  \begin{figure}
-    \centering
-    \includegraphics[width=2in]{volumetomesh.png}
-  \end{figure}
-
-  \begin{itemize}
-  \item Similar to mesh-based rendezvous
-    \medskip
-  \item Does not require a mesh, conceptual in this case
-    \medskip
-  \item Requires user code for evaluations in geometry
-    \medskip
-  \item See example/GeometryToMesh
-  \end{itemize}
-
-\end{frame}
-
-%%---------------------------------------------------------------------------%%
 \begin{frame}{DTK Implementation Scaling Results}
 
   \begin{columns}
@@ -403,10 +445,13 @@
     \begin{column}{0.5\textwidth}
       \begin{itemize}
       \item Mesh-to-mesh transfer
+        \bigskip
       \item Worst case scenario study (all-to-all) with random points
-        \medskip
+        \bigskip
+      \item Perfectly load balanced test
+        \bigskip
       \item Qualitatively similar to the SIERRA results
-        \medskip
+        \bigskip
       \item Largest test problems so far over 1.0E9 elements and 1.0E5
         cores
       \end{itemize}
@@ -417,7 +462,7 @@
       \centering
       \includegraphics[width=2.4in]{mesh.png}
       \caption{\sl Local mesh partition for scaling studies. This
-        particular mesh partition has 1.0E4 tri-linear hexahedrons.}
+        partition has 1.0E4 tri-linear hexahedrons.}
       \end{figure}
     \end{column}
 
@@ -461,6 +506,19 @@
 
 %%---------------------------------------------------------------------------%%
 \begin{frame}{Acknowledgements}
+
+  \begin{itemize}
+  \item This work was performed under funding provided by the
+    Consortium for Advanced Simulation of LWRs (CASL)
+    \bigskip
+  \item The authors would like to thank the CASL Virtual Reactor
+    Integration (VRI) development team for their assistance over the
+    course of development of DTK
+    \bigskip
+  \item The authors would also like to thank the Oak Ridge Leadership
+    Computing Facility (OLCF) for providing computational resources
+    and support
+  \end{itemize}
 
 \end{frame}
 
